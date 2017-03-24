@@ -7,12 +7,26 @@ import os
 
 keyPressData = []
 keyReleaseData = []
-dataset = []
+# dataset = []
 
-def processAndStore(keyPressData, keyReleaseData):
-	keyPressData, keyReleaseData = extractTimings(dataProcess(keyPressData), dataProcess(keyReleaseData))
-	data = dict(keyPressData=keyPressData, keyReleaseData=keyReleaseData)
-	dataset.append(data)
+def createFile(directory, data, entry):
+	filename = '{0}/data{1}.json'.format(directory, entry + 1)
+	with open(filename, 'a') as f:
+		json.dump(data, f)
+
+
+def createDirectory(index):
+	for user in range(1,11):
+		directory = 'user{0}/text{1}'.format(user, index + 1)
+		if not os.path.exists(directory):
+			os.makedirs(directory)
+			return directory
+		else:
+			continue
+
+# def processAndStore(keyPressData, keyReleaseData, directory, entry):
+	# keyPressData, keyReleaseData = extractTimings(dataProcess(keyPressData), dataProcess(keyReleaseData))
+	# dataset.append(data)
 
 def onPress(key):
 	t = datetime.now()
@@ -35,41 +49,35 @@ def onRelease(key):
 def dataCollect():
 	global keyPressData
 	global keyReleaseData
-	global dataset
+	# global dataset
 
-	for user in range(1,11):
-		directory = 'user{0}'.format(user)
-		if not os.path.exists(directory):
-			os.makedirs(directory)
-			break
-		else:
-			continue
 
 	# text = input("Enter training text: ")
 	textList = [r"abu@9,l12$", "the person and great for government know skill new have year even about from for make which people how not", "'your name' hello world", r"world%99, 12@hello; why.not72, #dream5$0* people@16love* 32great#%have"]
 	for index, text in enumerate(textList):
-		print("Enter 40 times:")
+		directory = createDirectory(index)
+		print("Entry 40 times:")
 		for entry in range(40):
 			print('{0}------'.format(text))
 			
 			with Listener(on_press=onPress, on_release=onRelease) as listener:
 				listener.join()
 			
-			processAndStore(keyPressData, keyReleaseData)
+			data = dict(keyPressData=keyPressData, keyReleaseData=keyReleaseData)
+			createFile(directory, data, entry)
+			
+			# processAndStore(keyPressData, keyReleaseData, directory, entry)
 			keyPressData = []
 			keyReleaseData = []
-			time.sleep(4)
+			time.sleep(5)
 
 		# create json file; since this a static model and text is always same
 		# therefore it is not added to the json object
+		# createFile(directory, dataset, index)
 
-		filename = '{0}/data{1}.json'.format(directory, index + 1)
-		with open(filename, 'a') as f:
-			json.dump(dataset, f)
+		# for index, dataentry in enumerate(dataset):
+		# 	print("{0}----{1}".format(index + 1, dataentry))
 
-		for index, dataentry in enumerate(dataset):
-			print("{0}----{1}".format(index + 1, dataentry))
-
-		dataset = []
+		# dataset = []
 
 dataCollect()
