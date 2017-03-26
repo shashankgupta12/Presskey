@@ -50,7 +50,10 @@ def swapShift(keyPressData, keyReleaseData):
 
 def removeExtraKeys(keyData):
     for index, data in enumerate(keyData):
-        if data.split('-')[1] in ['Key.down', 'Key.alt', 'Key.tab', 'Key.up', 'Key.right', 'Key.left']:
+        # here it is very important to remove '-' because if it is not removed then upon timing extraction error occurs
+        # because it splits the string on hyphon and entry number 2 is no longer an integer; and to remove a hyphon the 
+        # entry which is to be removed is "'" because upon splitting on hyphon entry [1] is "'"
+        if data.split('-')[1] in ["'", 'Key.down', 'Key.alt', 'Key.tab', 'Key.up', 'Key.right', 'Key.left', 'Key.num_lock']:
             keyData = [j for i, j in enumerate(keyData) if not i == index]
             keyData = removeExtraKeys(keyData)
             return keyData
