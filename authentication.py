@@ -1,48 +1,26 @@
-from pynput.keyboard import Key, Listener
-from datetime import datetime
-from dataprocess import dataProcess, extractTimings
-from calculatetimings import calculateCumulativeTime, calculateLatencyTime
-from training import generateComparator, produceMasterProfile
+from training import produceMasterProfile
+import json
+from calculatetimings import calculateCumulativeTime, calculateLatencyTime, calculateInterkeyTime
 
-pressdata = []
-releasedata = []
-
-def authenticate():
-	dp, dr = extractTimings(dataProcess(pressdata), dataProcess(releasedata))
-	ct = calculateCumulativeTime(dp, dr)
-	lt = calculateLatencyTime(dp, dr)
-	# master_lt = []
-	# master_ikt = []
-	master_ct, master_lt = produceMasterProfile()
-
-
-	euclideanDistance = [((x1 - x2)**2 + (y1 - y2)**2)**(1/2) for x1, y1, x2, y2 in zip(master_ct, master_lt, ct, lt)]
-	dissimilarity = sum(euclideanDistance)
-	comparator = generateComparator()
-	authenticationValue = 1 if dissimilarity <= comparator else 0
-	# print(authenticationValue)
-	user = 'Legitimate' if authenticationValue == 1 else 'Imposter'
-	print(user)
-
-def onPress(key):
-	t = datetime.now()
-	if not key == Key.enter:
-		time = t.minute*60*(10**6) + t.second*(10**6) + t.microsecond
-		pressdata.append("p-{0}-{1}".format(key,time))
-
-def onRelease(key):
-	t = datetime.now()
-	if key == Key.enter:
-		return False
-	else:
-		time = t.minute*60*(10**6) + t.second*(10**6) + t.microsecond
-		releasedata.append("r-{0}-{1}".format(key,time))
-
-def userInput():
-	text = 'shashank'
-	print("Type the following text: {0}".format(text))
-	with Listener(on_press=onPress, on_release=onRelease) as listener:
-		listener.join()
-	authenticate()
-
-userInput()
+def authenticate(user, text, num, comparator):
+	master_ct, master_lt, c, d = produceMasterProfile(text, user, num)
+	userlist = [u for u in range(1, 12) if not u == user]
+	count = 0
+	allUserCount = 0 
+	for user in userlist:
+		filename = 'processedData/text{0}/user{1}.json'.format(text, user)
+		with open(filename, 'r') as f:
+			data = [json.loads(line) for line in f]
+		for timings in data:
+			# ct = calculateCumulativeTime(timings['keyPressData'], timings['keyReleaseData'])
+			ct = calculateInterkeyTime(timings['keyPressData'], timings['keyReleaseData'])
+			lt = calculateLatencyTime(timings['keyPressData'], timings['keyReleaseData'])
+			del ct[-1]
+			euclideanDistance = [((x1 - x2)**2 + (y1 - y2)**2)**(1/2) for x1, y1, x2, y2 in zip(master_ct, master_lt, ct, lt)]
+			dissimilarity = sum(euclideanDistance)
+			authenticationValue = 1 if dissimilarity <= comparator else 0
+			user = 'Legitimate' if authenticationValue == 1 else 'Imposter'
+			if user == 'Legitimate':
+				count += 1
+			allUserCount += 1
+	return ((count / allUserCount) * 100)
