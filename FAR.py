@@ -1,5 +1,5 @@
 from training import generateComparator
-from authentication import authenticate
+from authentication import authenticate, simcalc
 import statistics
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,21 +18,28 @@ def barPlot(FAR):
 
 def calculateFAR():
 	FARs = []
-	for text in range(1, 5):
+	for text in range(1, 2):
 		textWiseFAR = []
 		# print('text{0}'.format(text))
+		# userWiseFAR = []
 		for user in range(1, 12):
-			userWiseFAR = []
-			for profile in [10, 15, 20, 30]:
-				comp = generateComparator(text, user, profile)
-				FAR = authenticate(user, text, profile, comp)
-				userWiseFAR.append(FAR)
-				print('user{0}:profile{1}:{2}'.format(user, profile, FAR), end=' ')
-			textWiseFAR.append(userWiseFAR)
-			print()
-		FARs.append([statistics.mean(far) for far in zip(*textWiseFAR)])
+			# for profile in [10, 15, 20, 30]:
+			comp = generateComparator(text, user, 40)
+			FAR = authenticate(user, text, 40, comp)
+			# userWiseFAR.append(FAR)
+			textWiseFAR.append(FAR)
+			print('user{0}: {1}'.format(user, FAR))
+		FARs.append([statistics.mean(textWiseFAR)])
 		print()
-	barPlot(FARs)
+	# barPlot(FARs)
 	print(FARs)
 
+def calculateSimilarity():
+	for user in range(1,12):
+		sim = simcalc(user, 1)
+		print(user)
+		for i,j in enumerate(sim):
+			print('User_: {0}'.format(j/11))
+
+# calculateSimilarity()
 calculateFAR()
