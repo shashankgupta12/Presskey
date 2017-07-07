@@ -14,6 +14,8 @@ def produceMasterProfileFRR(text, user):
 	outliers = getPositionOfOutliers(text,user)
 	data = [timings for i, timings in enumerate(data) if not i in outliers]
 	
+	# here only 5 records have been used because after removing outliers around 20 records are only left 
+	# per user; so only 5 for master profile generation and remaining for authentication
 	for timings in data[:5]:
 
 		ikt = calculateInterkeyTime(timings['keyPressData'], timings['keyReleaseData'])

@@ -47,3 +47,15 @@ def generateComparatorFAR(text, user):
 	stdev = statistics.stdev(dissimilarityValues)
 	SIGMA = 1.0
 	return (mean + (SIGMA * stdev))
+
+if __name__ == '__main__':
+	
+	import pylab 
+	import scipy.stats as stats
+
+	dissimilarity = calculateTrajectoryDissimilaritiesFAR(1, 3)
+	dissimilarity = [i/10000 for i in dissimilarity]
+	stats.probplot(dissimilarity, dist="norm", plot=pylab)
+	pylab.ylabel('Observation quantiles (*10^4)')
+	pylab.title('')
+	pylab.show()
