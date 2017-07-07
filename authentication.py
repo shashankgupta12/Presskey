@@ -1,10 +1,11 @@
-from training import produceMasterProfileFAR, produceMasterProfileFRR
+from trainingFAR import produceMasterProfileFAR
+from trainingFRR import produceMasterProfileFRR
 import json
 from calculatetimings import calculateKeyHoldTime, calculateInterkeyTime
 from outlierdeletion import getPositionOfOutliers
 
-def authenticateFAR(user, text, num, comparator):
-	master_ikt, master_kht, c, d = produceMasterProfileFAR(text, user, num)
+def authenticateFAR(user, text, comparator):
+	master_ikt, master_kht, c, d = produceMasterProfileFAR(text, user)
 	userlist = [u for u in range(1, 12) if not u == user]
 	count = 0
 	allUserCount = 0 
@@ -36,8 +37,8 @@ def authenticateFAR(user, text, num, comparator):
 	
 	return ((count / allUserCount) * 100)
 
-def authenticateFRR(user, text, num, comparator):
-	master_ikt, master_kht, c, d = produceMasterProfileFRR(text, user, 5)
+def authenticateFRR(user, text, comparator):
+	master_ikt, master_kht, c, d = produceMasterProfileFRR(text, user)
 	count = 0
 	allUserCount = 0 
 	filename = 'processedData/text{0}/user{1}.json'.format(text, user)

@@ -1,4 +1,5 @@
-from training import generateComparator
+from trainingFAR import generateComparatorFAR
+from trainingFRR import generateComparatorFRR
 from authentication import authenticateFAR, authenticateFRR
 import statistics
 
@@ -7,11 +8,13 @@ def calculateFAR():
 	for text in range(1, 5):
 		textWiseFAR = []
 		for user in range(1, 12):
-			comp = generateComparator(text, user, 40)
-			FAR = authenticateFAR(user, text, 40, comp)
+			comp = generateComparator(text, user)
+			FAR = authenticateFAR(user, text, comp)
 			print('user{0}: {1}'.format(user, FAR))
 			textWiseFAR.append(FAR)
-		FARs.append(statistics.mean(textWiseFAR))
+		far = statistics.mean(textWiseFAR)
+		print(far)
+		FARs.append(far)
 		print()
 	print(FARs)
 
@@ -20,14 +23,16 @@ def calculateFRR():
 	for text in range(1, 5):
 		textWiseFRR = []
 		for user in range(1, 12):
-			comp = generateComparator(text, user, 40)
-			FRR = authenticateFRR(user, text, 40, comp)
+			comp = generateComparator(text, user)
+			FRR = authenticateFRR(user, text, comp)
 			print('user{0}: {1}'.format(user, FRR))
 			textWiseFRR.append(FRR)
-		FRRs.append(statistics.mean(textWiseFRR))
+		frr = statistics.mean(textWiseFRR)
+		print(frr)
+		FRRs.append(frr)
 		print()
 	print(FRRs)
 
 if __name__ == '__main__':
 	calculateFAR()
-	# calculateFRR()
+	calculateFRR()
