@@ -6,3 +6,4 @@ userData/
 processedData/
 boxplots/
 pip-selfcheck.json
+*.pyc

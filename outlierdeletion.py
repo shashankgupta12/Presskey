@@ -15,7 +15,7 @@ def createDirectoryStructure():
 				dire = '{0}/user{1}'.format(direc, user)
 				os.makedirs(dire)
 
-def checkOutliers():
+def plotBoxplots():
 	for text in range(1, 5):
 		for user in range(1, 12):
 			filename = 'processedData/text{0}/user{1}.json'.format(text, user)
@@ -45,4 +45,4 @@ def getPositionOfOutliers(text, user):
 
 if __name__ == '__main__':
 	createDirectoryStructure()
-	checkOutliers()
+	plotBoxplots()

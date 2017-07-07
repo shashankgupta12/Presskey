@@ -9,14 +9,14 @@ keyPressData = []
 keyReleaseData = []
 
 def createFile(directory, data, entry):
-	filename = '{0}/data{1}.json'.format(directory, entry + 1)
+	filename = '{0}/data{1}.json'.format(directory, entry)
 	with open(filename, 'a') as f:
 		json.dump(data, f)
 
 
 def createDirectory(index):
 	for user in range(1,12):
-		directory = 'user{0}/text{1}'.format(user, index + 1)
+		directory = 'user{0}/text{1}'.format(user, index)
 		if not os.path.exists(directory):
 			os.makedirs(directory)
 			return directory
@@ -44,7 +44,7 @@ def dataCollect():
 	textList = [r"abu@9,l12$", "the person and great for government know skill new have year even about from for make which people how not", "student hello world", r"world%99, 12@hello; why.not72, #dream5$0* people@16love* 32great#%have"]
 
 	for index, text in enumerate(textList):
-		directory = createDirectory(index)
+		directory = createDirectory(index + 1)
 		print("Entry 40 times:")
 		
 		for entry in range(40):
@@ -53,7 +53,7 @@ def dataCollect():
 				listener.join()
 			
 			data = dict(keyPressData=keyPressData, keyReleaseData=keyReleaseData)
-			createFile(directory, data, entry)
+			createFile(directory, data, entry + 1)
 			keyPressData = []
 			keyReleaseData = []
 			time.sleep(5)
